@@ -44,17 +44,54 @@ class Vampire {
 
   // Returns the vampire object with that name, or null if no vampire exists with that name
   vampireWithName(name) {
-    
+    let result = {};
+
+    // console.log(this.name);
+    if (this.name === name) {
+      // console.log("equals");
+      result = this;
+      return result;
+    }
+
+    for (const vamp of this.offspring) {
+      result = vamp.vampireWithName(name);
+      if (result) {
+        return result
+      }
+    }
+    if (Object.keys(result).length === 0) {
+      return null;
+    } else {
+      return result;
+    }
   }
 
   // Returns the total number of vampires that exist
   get totalDescendents() {
-    
+    let count = 0;
+
+    // console.log(this.name);
+    for (const vamp of this.offspring) {
+      count++;
+      count = count + vamp.totalDescendents;
+    }
+
+    return count;
   }
 
   // Returns an array of all the vampires that were converted after 1980
   get allMillennialVampires() {
-    
+    let vamps = [];
+
+    if (this.yearConverted > 1980) {
+      vamps.push(this);
+    }
+
+    for (const vamp of this.offspring) {
+      vamps = vamps.concat(vamp.allMillennialVampires);
+    }
+
+    return vamps;
   }
 
   /** Stretch **/
@@ -95,27 +132,23 @@ class Vampire {
 
 module.exports = Vampire;
 
+rootVampire = new Vampire("root");
+offspring1 = new Vampire("a", 1000);
+offspring2 = new Vampire("b", 900);
+offspring3 = new Vampire("c", 1400);
+offspring4 = new Vampire("d", 1890);
+offspring5 = new Vampire("e", 1990);
+offspring6 = new Vampire("f", 2000);
+offspring7 = new Vampire("g", 2010);
+offspring8 = new Vampire("h", 2017);
 
-// rootVampire = new Vampire("root");
+rootVampire.addOffspring(offspring1);
+rootVampire.addOffspring(offspring2);
+rootVampire.addOffspring(offspring3);
+offspring3.addOffspring(offspring4);
+offspring3.addOffspring(offspring5);
+offspring5.addOffspring(offspring6);
+offspring6.addOffspring(offspring7);
+offspring2.addOffspring(offspring8);
 
-// offspring1 = new Vampire("a");
-// offspring2 = new Vampire("b");
-// offspring3 = new Vampire("c");
-// offspring4 = new Vampire("d");
-// offspring5 = new Vampire("e");
-// offspring6 = new Vampire("f");
-// offspring7 = new Vampire("g");
-// offspring8 = new Vampire("h");
-
-// rootVampire.addOffspring(offspring1);
-// rootVampire.addOffspring(offspring2);
-// rootVampire.addOffspring(offspring3);
-// offspring3.addOffspring(offspring4);
-// offspring3.addOffspring(offspring5);
-// offspring5.addOffspring(offspring6);
-// offspring6.addOffspring(offspring7);
-// offspring2.addOffspring(offspring8);
-
-
-// // console.log(rootVampire.closestCommonAncestor(offspring3).name);
-// console.log(offspring1.closestCommonAncestor(offspring2).name);
+console.log(rootVampire.allMillennialVampires);
